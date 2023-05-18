@@ -50,3 +50,7 @@
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 10px;
 }
+.enlarged {
+  transform: scale(1.2); /* Increase the image size */
+  transition: transform 0.2s;
+}
