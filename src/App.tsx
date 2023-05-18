@@ -31,38 +31,15 @@ const FAMILY_AUDIO_MAP: FamilyAudioMap = {
 
 function App() {
   const [multiplier, setMultiplier] = useState(1);
-  const [transcript, setTranscript] = useState("");
-  const { finalTranscript, resetTranscript } = useSpeechRecognition();
+  const {
+    interimTranscript,
+    listening,
+    resetTranscript,
+    browserSupportsSpeechRecognition,
+  } = useSpeechRecognition();
 
-  const handleListen = () => {
-    SpeechRecognition.startListening({ continuous: true });
-  };
-
-  const handleStop = () => {
-    SpeechRecognition.stopListening();
-    setTranscript(finalTranscript);
-    resetTranscript();
-  };
   useEffect(() => {
-    // Obtain access to user's microphone
-    //   navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-    //     const audioContext = new AudioContext();
-    //     const source = audioContext.createMediaStreamSource(stream);
-    //     const analyser = audioContext.createAnalyser();
-    //     // Connect microphone data to analyser node
-    //     source.connect(analyser);
-    //     // Process microphone data every 100ms
-    //     // setInterval(() => {
-    //     //   const bufferLength = analyser.frequencyBinCount;
-    //     //   const dataArray = new Uint8Array(bufferLength);
-    //     //   analyser.getByteFrequencyData(dataArray);
-    //     //   // Calculate average volume of microphone data
-    //     //   const sum = dataArray.reduce((a, b) => a + b, 0);
-    //     //   const avg = sum / bufferLength;
-    //     //   // Set multiplier based on average volume
-    //     //   setMultiplier(avg / 128 + 1);
-    //     // }, 2000);
-    //   });
+    SpeechRecognition.startListening({ continuous: true });
   }, []);
 
   const handleClick = (p: string) => {
@@ -72,6 +49,13 @@ function App() {
 
   return (
     <div className="App">
+      <div>
+        <h1>
+          {" "}
+          {listening && "you said:"}
+          {interimTranscript}
+        </h1>
+      </div>
       <div className="wrapper">
         {Object.keys(FAMILY_AUDIO_MAP).map((p, index) => {
           let randomNumber = Math.floor(Math.random() * 4) + 1;
@@ -85,11 +69,6 @@ function App() {
             </div>
           );
         })}
-      </div>
-      <div>
-        <button onClick={handleListen}>Start Listening</button>
-        <button onClick={handleStop}>Stop Listening</button>
-        <p>{transcript}</p>
       </div>
     </div>
   );
